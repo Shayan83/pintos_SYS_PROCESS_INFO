@@ -36,6 +36,9 @@ enum {
 
 	SYS_MOUNT,
 	SYS_UMOUNT,
+
+	/* Custom: Process info syscall */
+	SYS_PROCESS_INFO,
 };
 
 #endif /* lib/syscall-nr.h */

@@ -7,6 +7,8 @@
 #include "userprog/gdt.h"
 #include "threads/flags.h"
 #include "intrinsic.h"
+#include <string.h>
+#include <userprog/process.h>
 
 void syscall_entry (void);
 void syscall_handler (struct intr_frame *);
@@ -39,8 +41,34 @@ syscall_init (void) {
 
 /* The main system call interface */
 void
-syscall_handler (struct intr_frame *f UNUSED) {
-	// TODO: Your implementation goes here.
-	printf ("system call!\n");
-	thread_exit ();
+syscall_handler (struct intr_frame *f) {
+	uint64_t syscall_num = f->R.rax;
+	int ret = 0;
+	switch (syscall_num) {
+		case SYS_PROCESS_INFO: {
+			int pid = (int)f->R.rdi;
+			int info_type = (int)f->R.rsi;
+			void *out_buffer = (void *)f->R.rdx;
+			unsigned buffer_size = (unsigned)f->R.r10;
+			ret = sys_process_info_impl(pid, info_type, out_buffer, buffer_size);
+			f->R.rax = ret;
+			break;
+		}
+		default:
+			printf ("Unknown system call!\n");
+			thread_exit();
+	}
+}
+
+// Implementation of sys_process_info
+static int sys_process_info_impl(int pid, int info_type, void *out_buffer, unsigned buffer_size) {
+	if (!out_buffer || buffer_size < sizeof(struct process_cpu_info))
+		return -1; // EFAULT
+	struct process_cpu_info info;
+	// For now, just return dummy values
+	info.utime = 42;
+	info.stime = 24;
+	// Copy to user buffer (in real Pintos, use copy_out or similar)
+	memcpy(out_buffer, &info, sizeof(info));
+	return 0;
 }

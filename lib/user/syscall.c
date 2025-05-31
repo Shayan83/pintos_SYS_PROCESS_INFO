@@ -68,6 +68,7 @@ static __inline int64_t syscall (uint64_t num_, uint64_t a1_, uint64_t a2_,
 			((uint64_t) ARG3), \
 			((uint64_t) ARG4), \
 			0))
+
 void
 halt (void) {
 	syscall0 (SYS_HALT);
@@ -193,4 +194,8 @@ mount (const char *path, int chan_no, int dev_no) {
 int
 umount (const char *path) {
 	return syscall1 (SYS_UMOUNT, path);
+}
+
+int sys_process_info(pid_t pid, int info_type, void *out_buffer, size_t buffer_size) {
+	return syscall4(SYS_PROCESS_INFO, pid, info_type, out_buffer, buffer_size);
 }

@@ -143,4 +143,10 @@ int thread_get_load_avg (void);
 
 void do_iret (struct intr_frame *tf);
 
+/* Structure for returning process CPU info. */
+struct process_cpu_info {
+    unsigned long utime; // User-mode CPU time
+    unsigned long stime; // Kernel-mode CPU time
+};
+
 #endif /* threads/thread.h */

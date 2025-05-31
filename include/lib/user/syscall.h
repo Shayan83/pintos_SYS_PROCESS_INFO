@@ -50,6 +50,8 @@ bool isdir (int fd);
 int inumber (int fd);
 int symlink (const char* target, const char* linkpath);
 
+int sys_process_info(pid_t pid, int info_type, void *out_buffer, size_t buffer_size);
+
 static inline void* get_phys_addr (void *user_addr) {
 	void* pa;
 	asm volatile ("movq %0, %%rax" ::"r"(user_addr));
